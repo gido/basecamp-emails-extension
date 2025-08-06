@@ -1,6 +1,6 @@
 # Basecamp Email Search Extension
 
-A browser extension that adds a powerful email search interface to Basecamp, allowing you to quickly find and copy team members' email addresses with just a few keystrokes.
+A browser extension that adds a convenient email search modal to Basecamp project pages, allowing you to quickly find and copy team members' email addresses with just one click.
 
 ![Extension Demo](https://img.shields.io/badge/Browser-Firefox%20%7C%20Chrome-blue)
 ![Version](https://img.shields.io/badge/Version-1.0.0-green)
@@ -10,10 +10,11 @@ A browser extension that adds a powerful email search interface to Basecamp, all
 
 - 🔍 **Real-time Search**: Instant search results as you type (name, email, or title)
 - 📧 **One-click Copy**: Click any result to copy email address to clipboard
-- 🎯 **Smart Integration**: Floating widget that doesn't interfere with Basecamp UI
+- 🎯 **Smart Integration**: Button appears only on project homepages next to "Set up people"
 - 🔒 **Secure Authentication**: Uses your existing Basecamp session, no additional login
-- ✨ **Clean Interface**: Minimalist design with show/hide toggle
+- ✨ **Clean Modal Interface**: Modern, centered modal with all team members loaded automatically
 - ⚡ **Fast Performance**: Debounced search with local caching
+- ⌨️ **Keyboard Support**: ESC key to close, click outside to dismiss
 - 🌐 **Cross-browser**: Full support for Firefox and Chrome (Manifest V3)
 
 ## 📦 Installation
@@ -49,19 +50,20 @@ A browser extension that adds a powerful email search interface to Basecamp, all
 5. **Visit any Basecamp page** - the extension widget will appear automatically
 
 ### Verification
-- Navigate to any Basecamp project (e.g., `https://3.basecamp.com/your-account/`)
-- Look for the floating "📧 Email Search" widget
+- Navigate to any Basecamp project homepage (e.g., `https://3.basecamp.com/your-account/projects/123456/`)
+- Look for the "📧 See Emails" button next to "Set up people"
 - If it doesn't appear, check the browser console (F12) for errors
 
 ## 🚀 Usage
 
 ### Basic Search
-1. **Navigate** to any Basecamp project page
-2. **Find the widget** - The "📧 Email Search" widget appears as a floating panel
-3. **Start typing** - Search by name, email, or job title  
-4. **View results** - Team members matching your query appear instantly
-5. **Copy email** - Click any result to copy the email address to clipboard
-6. **Success feedback** - "Copied to clipboard!" message confirms the action
+1. **Navigate** to a Basecamp project homepage
+2. **Find the button** - The "📧 See Emails" button appears next to "Set up people"
+3. **Click to open** - Modal opens with all team members loaded automatically
+4. **Start typing** - Search by name, email, or job title in the search field
+5. **View results** - Team members matching your query appear instantly
+6. **Copy email** - Click any result to copy the email address to clipboard
+7. **Success feedback** - "Copied to clipboard!" message confirms the action
 
 ### Search Examples
 - **By name**: "marc", "gilles", "susana" 
@@ -69,14 +71,14 @@ A browser extension that adds a powerful email search interface to Basecamp, all
 - **By title**: "developer", "manager", "designer"
 - **Partial matches**: "mar" finds "Marc Friederich"
 
-### Widget Controls  
-- **Toggle visibility**: Click the "−" button to minimize/expand
-- **Clear search**: Delete text or search for new terms
-- **Reposition**: Widget stays in a fixed position (bottom-right by default)
+### Modal Controls  
+- **Close modal**: Click the "×" button or click outside the modal
+- **Clear search**: Delete text to show all team members again
+- **Keyboard shortcuts**: Press ESC to close modal
 
 ### Keyboard Shortcuts
-- **Type anywhere**: Start typing to focus the search field automatically
-- **Escape**: Clear search or minimize widget
+- **ESC**: Close the modal
+- **Click outside**: Close the modal by clicking the dark overlay
 
 ## 🛠️ Development  
 
@@ -117,21 +119,21 @@ basecamp-emails-extension/
 
 The extension consists of:
 
-1. **Content Script** (`main.js`): Injected into Basecamp pages
-   - Detects Basecamp pages
-   - Creates and manages the search widget  
+1. **Content Script** (`main.js`): Injected into Basecamp project pages
+   - Detects Basecamp project homepages
+   - Creates and manages the "See Emails" button and modal
    - Handles API requests to Basecamp
-   - Manages clipboard operations
+   - Manages clipboard operations and modal interactions
 
 2. **Manifest** (`manifest.json`): Extension configuration
    - Defines permissions and content script injection
    - Configures icons and metadata
    - Sets up browser compatibility
 
-3. **Styles** (`styles.css`): Widget appearance  
-   - Floating panel design
-   - Responsive layout
-   - Animation and transitions
+3. **Styles** (`styles.css`): Modal and button appearance  
+   - Modern modal overlay design
+   - Responsive layout and typography
+   - Smooth animations and transitions
 
 ## ⚙️ How It Works
 
@@ -139,24 +141,24 @@ The extension consists of:
 
 The extension leverages Basecamp's internal API to provide email search functionality:
 
-1. **Page Detection**: Monitors for `*.basecamp.com` domains
-2. **URL Analysis**: Extracts account ID and bucket ID from current URL
+1. **Page Detection**: Monitors for `*.basecamp.com` project pages
+2. **Button Injection**: Adds "See Emails" button to project-avatars section
+3. **URL Analysis**: Extracts account ID and project ID from current URL
    ```
-   https://3.basecamp.com/[ACCOUNT_ID]/buckets/[BUCKET_ID]/...
+   https://3.basecamp.com/[ACCOUNT_ID]/projects/[PROJECT_ID]/
    ```
-3. **Authentication**: Retrieves CSRF token from page meta tags
-4. **API Integration**: Queries Basecamp's autocompletables endpoint
-5. **Data Processing**: Filters and displays user information locally
-6. **Clipboard Integration**: Uses modern Clipboard API for one-click copying
+4. **Authentication**: Retrieves CSRF token from page meta tags
+5. **API Integration**: Queries Basecamp's autocompletables endpoint
+6. **Modal Display**: Shows all team members in a searchable modal
+7. **Data Processing**: Filters and displays user information locally
+8. **Clipboard Integration**: Uses modern Clipboard API for one-click copying
 
 ### API Details
 
-**Endpoint**: `https://3.basecamp.com/{account_id}/autocompletables/buckets/{bucket_id}/people`
+**Endpoint**: `https://3.basecamp.com/{account_id}/autocompletables/buckets/{project_id}/people`
 
 **Parameters**:
-- `include_groups=true` - Include team groups
-- `mentionable=true` - Include mentionable users  
-- `people_scope=team_users` - Scope to team members
+- `mentionable=true` - Include mentionable users (excludes groups automatically)
 
 **Headers**:
 ```javascript
@@ -196,8 +198,9 @@ The extension leverages Basecamp's internal API to provide email search function
 
 | Issue | Symptoms | Solution |
 |-------|----------|----------|
-| **Extension not loading** | Widget doesn't appear | Check browser console (F12) for errors<br/>Reload extension in browser settings |
-| **No search results** | "Searching..." never completes | Verify you're on a project page (not account home)<br/>Check Network tab for failed API calls |
+| **Button not appearing** | "See Emails" button missing | Verify you're on a project homepage (not bucket/message page)<br/>Check browser console (F12) for errors<br/>Reload extension in browser settings |
+| **Modal not opening** | Button present but modal doesn't open | Check browser console for JavaScript errors<br/>Reload the page |
+| **No search results** | "Loading..." never completes | Verify you're on a project page with team members<br/>Check Network tab for failed API calls |
 | **"No email" displayed** | Names show but emails are blank | API may not return emails due to privacy settings<br/>Try different users or contact admin |
 | **CSRF token errors** | Console shows authentication errors | Refresh the Basecamp page<br/>Clear browser cache and cookies |
 | **Clipboard not working** | No "copied" feedback | Check browser clipboard permissions<br/>Try manually selecting and copying |
@@ -208,7 +211,7 @@ The extension leverages Basecamp's internal API to provide email search function
 2. **Check Console tab** for JavaScript errors
 3. **Monitor Network tab** for API requests to `/autocompletables/`
 4. **Verify extension is loaded** in browser settings
-5. **Test on different Basecamp pages** (projects vs. account home)
+5. **Test on different Basecamp project pages** (ensure you're on project homepages)
 
 ### Browser Compatibility
 
