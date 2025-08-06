@@ -1,34 +1,49 @@
 class BasecampEmailSearch {
   constructor() {
-    this.widget = null;
+    console.log('🚀 BasecampEmailSearch constructor called');
+    this.modal = null;
+    this.button = null;
     this.users = [];
-    this.isMinimized = false;
     this.debounceTimeout = null;
     
     this.init();
   }
 
   init() {
-    if (!this.isBasecampPage()) {
+    console.log('🔍 Init called');
+    console.log('URL:', window.location.href);
+    console.log('Hostname includes basecamp:', window.location.hostname.includes('basecamp.com'));
+    console.log('Path includes projects:', window.location.pathname.includes('/projects/'));
+    
+    if (!this.isProjectHomePage()) {
+      console.log('❌ Not a project home page, exiting');
       return;
     }
 
-    this.createWidget();
-    this.attachEventListeners();
+    console.log('✅ Project home page detected, adding button');
+    this.addSeeEmailsButton();
   }
 
-  isBasecampPage() {
-    return window.location.hostname.includes('basecamp.com');
+  isProjectHomePage() {
+    return window.location.hostname.includes('basecamp.com') && 
+           window.location.pathname.includes('/projects/');
   }
 
   extractUrlInfo() {
     const url = window.location.pathname;
+    console.log('🔍 Extracting from URL:', url);
+    
     const accountMatch = url.match(/\/(\d+)\//);
-    const bucketMatch = url.match(/\/buckets\/(\d+)\//);
+    const projectMatch = url.match(/\/projects\/(\d+)/); // Remove trailing slash requirement
+    
+    const accountId = accountMatch ? accountMatch[1] : null;
+    const bucketId = projectMatch ? projectMatch[1] : null;
+    
+    console.log('Account ID:', accountId, 'Bucket ID:', bucketId);
     
     return {
-      accountId: accountMatch ? accountMatch[1] : null,
-      bucketId: bucketMatch ? bucketMatch[1] : null
+      accountId: accountId,
+      bucketId: bucketId
     };
   }
 
@@ -48,53 +63,133 @@ class BasecampEmailSearch {
     return null;
   }
 
-  createWidget() {
-    this.widget = document.createElement('div');
-    this.widget.className = 'basecamp-email-search';
+  addSeeEmailsButton() {
+    console.log('🔍 Looking for setup people button...');
     
-    this.widget.innerHTML = `
-      <div class="basecamp-email-search-header">
-        <h3 class="basecamp-email-search-title">📧 Email Search</h3>
-        <button class="basecamp-email-search-toggle" title="Toggle">−</button>
+    // Find the visible "Set up people" button by searching through all buttons
+    let setupPeopleButton = null;
+    const buttons = document.querySelectorAll('button, a');
+    
+    for (let button of buttons) {
+      const text = button.textContent && button.textContent.trim();
+      if (text && text.includes('Set up people')) {
+        // Make sure it's visible (not in a hidden dropdown)
+        const styles = window.getComputedStyle(button);
+        if (styles.display !== 'none' && styles.visibility !== 'hidden') {
+          setupPeopleButton = button;
+          console.log('Found visible setup people button:', button);
+          break;
+        } else {
+          console.log('Found hidden setup people button (skipping):', button);
+        }
+      }
+    }
+    
+    console.log('Setup people button found:', setupPeopleButton);
+    
+    if (!setupPeopleButton) {
+      console.log('Setup people button not found, retrying in 500ms...');
+      setTimeout(() => this.addSeeEmailsButton(), 500);
+      return;
+    }
+
+    console.log('✅ Setup people button found, creating See Emails button');
+    
+    // Create the "See Emails" button
+    this.button = document.createElement('a');
+    this.button.href = '#';
+    this.button.className = 'btn btn--small';
+    this.button.innerHTML = '📧 See Emails';
+    this.button.style.cssText = 'margin-left: 20px;';
+    
+    console.log('📧 See Emails button created:', this.button);
+    
+    // Find the project-avatars section and add as last child
+    const projectAvatarsSection = document.querySelector('section.project-avatars[data-controller="desktop-modal"]');
+    
+    if (projectAvatarsSection) {
+      projectAvatarsSection.appendChild(this.button);
+      console.log('✅ Button added to project-avatars section');
+    } else {
+      console.log('❌ Could not find project-avatars section');
+    }
+    
+    console.log('✅ See Emails button inserted into DOM');
+    
+    // Add click event listener
+    this.button.addEventListener('click', (e) => {
+      e.preventDefault();
+      console.log('📧 See Emails button clicked!');
+      this.showEmailModal();
+    });
+  }
+
+  showEmailModal() {
+    if (this.modal) {
+      // Modal already exists, just show it
+      this.modal.style.display = 'block';
+      return;
+    }
+
+    // Create modal overlay
+    this.modal = document.createElement('div');
+    this.modal.className = 'basecamp-email-modal-overlay';
+    
+    this.modal.innerHTML = `
+      <div class="basecamp-email-modal">
+        <div class="basecamp-email-modal-header">
+          <h2>Team Emails</h2>
+          <button class="basecamp-email-modal-close">&times;</button>
+        </div>
+        <div class="basecamp-email-modal-content">
+          <div class="basecamp-email-search-section">
+            <input 
+              type="text" 
+              class="basecamp-email-search-input" 
+              placeholder="Search team members..."
+              autocomplete="off"
+            />
+          </div>
+          <div class="basecamp-email-search-results"></div>
+        </div>
+        <div class="basecamp-email-search-copied">Copied to clipboard!</div>
       </div>
-      <div class="basecamp-email-search-content">
-        <input 
-          type="text" 
-          class="basecamp-email-search-input" 
-          placeholder="Search team members..."
-          autocomplete="off"
-        />
-        <div class="basecamp-email-search-results"></div>
-      </div>
-      <div class="basecamp-email-search-copied">Copied to clipboard!</div>
     `;
     
-    document.body.appendChild(this.widget);
+    document.body.appendChild(this.modal);
+    this.attachModalEventListeners();
+    
+    // Auto-load all team members
+    this.loadAllTeamMembers();
   }
 
-  attachEventListeners() {
-    const toggle = this.widget.querySelector('.basecamp-email-search-toggle');
-    const input = this.widget.querySelector('.basecamp-email-search-input');
-    const results = this.widget.querySelector('.basecamp-email-search-results');
+  attachModalEventListeners() {
+    const closeBtn = this.modal.querySelector('.basecamp-email-modal-close');
+    const input = this.modal.querySelector('.basecamp-email-search-input');
+    const results = this.modal.querySelector('.basecamp-email-search-results');
+    const overlay = this.modal;
 
-    toggle.addEventListener('click', () => this.toggleWidget());
+    // Close modal events
+    closeBtn.addEventListener('click', () => this.hideModal());
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) this.hideModal();
+    });
+    
+    // Search functionality
     input.addEventListener('input', (e) => this.handleSearch(e.target.value));
     results.addEventListener('click', (e) => this.handleResultClick(e));
+    
+    // ESC key to close
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && this.modal && this.modal.style.display === 'block') {
+        this.hideModal();
+      }
+    });
   }
 
-  toggleWidget() {
-    this.isMinimized = !this.isMinimized;
-    const content = this.widget.querySelector('.basecamp-email-search-content');
-    const toggle = this.widget.querySelector('.basecamp-email-search-toggle');
-    
-    if (this.isMinimized) {
-      content.style.display = 'none';
-      toggle.textContent = '+';
-      this.widget.classList.add('minimized');
-    } else {
-      content.style.display = 'block';
-      toggle.textContent = '−';
-      this.widget.classList.remove('minimized');
+  hideModal() {
+    if (this.modal) {
+      this.modal.style.display = 'none';
     }
   }
 
@@ -111,8 +206,32 @@ class BasecampEmailSearch {
     }, 300);
   }
 
+  async loadAllTeamMembers() {
+    const results = this.modal.querySelector('.basecamp-email-search-results');
+    results.innerHTML = '<div class="basecamp-email-search-loading">Loading team members...</div>';
+
+    try {
+      const users = await this.fetchUsers();
+      this.displayResults(users);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Error loading users:', error);
+      results.innerHTML = '<div class="basecamp-email-search-error">Error loading team members. Please try again.</div>';
+    }
+  }
+
   async searchUsers(query) {
-    const results = this.widget.querySelector('.basecamp-email-search-results');
+    if (!this.modal) return;
+    
+    const results = this.modal.querySelector('.basecamp-email-search-results');
+    
+    if (!query.trim()) {
+      // Show all users when no search query
+      const users = await this.fetchUsers();
+      this.displayResults(users);
+      return;
+    }
+    
     results.innerHTML = '<div class="basecamp-email-search-loading">Searching...</div>';
 
     try {
@@ -142,7 +261,7 @@ class BasecampEmailSearch {
       throw new Error('Unable to extract CSRF token');
     }
 
-    const url = `https://3.basecamp.com/${accountId}/autocompletables/buckets/${bucketId}/people?include_groups=true&mentionable=true&people_scope=team_users`;
+    const url = `https://3.basecamp.com/${accountId}/autocompletables/buckets/${bucketId}/people?mentionable=true`;
     
     const response = await fetch(url, {
       method: 'GET',
@@ -174,10 +293,12 @@ class BasecampEmailSearch {
   }
 
   displayResults(users) {
-    const results = this.widget.querySelector('.basecamp-email-search-results');
+    if (!this.modal) return;
+    
+    const results = this.modal.querySelector('.basecamp-email-search-results');
     
     if (users.length === 0) {
-      results.innerHTML = '<div class="basecamp-email-search-no-results">No users found</div>';
+      results.innerHTML = '<div class="basecamp-email-search-no-results">No team members found</div>';
       return;
     }
 
@@ -227,7 +348,9 @@ class BasecampEmailSearch {
   }
 
   showCopiedMessage() {
-    const copiedDiv = this.widget.querySelector('.basecamp-email-search-copied');
+    if (!this.modal) return;
+    
+    const copiedDiv = this.modal.querySelector('.basecamp-email-search-copied');
     copiedDiv.classList.add('show');
     
     setTimeout(() => {
@@ -236,7 +359,9 @@ class BasecampEmailSearch {
   }
 
   clearResults() {
-    const results = this.widget.querySelector('.basecamp-email-search-results');
+    if (!this.modal) return;
+    
+    const results = this.modal.querySelector('.basecamp-email-search-results');
     results.innerHTML = '';
   }
 

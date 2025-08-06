@@ -1,27 +1,35 @@
 /* Basecamp Email Search Extension Styles */
 
-.basecamp-email-search {
+/* Modal Overlay */
+.basecamp-email-modal-overlay {
   position: fixed;
-  top: 20px;
-  right: 20px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
   z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Modal Container */
+.basecamp-email-modal {
   background: white;
-  border: 1px solid #ddd;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  width: 300px;
-  max-height: 400px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
   overflow: hidden;
+  position: relative;
 }
 
-.basecamp-email-search.minimized {
-  width: auto;
-  height: auto;
-}
-
-.basecamp-email-search-header {
-  padding: 12px 15px;
+/* Modal Header */
+.basecamp-email-modal-header {
+  padding: 20px 24px;
   background: #f8f9fa;
   border-bottom: 1px solid #eee;
   display: flex;
@@ -29,33 +37,50 @@
   align-items: center;
 }
 
-.basecamp-email-search-title {
+.basecamp-email-modal-header h2 {
   font-weight: 600;
-  font-size: 14px;
+  font-size: 18px;
   color: #333;
   margin: 0;
 }
 
-.basecamp-email-search-toggle {
+.basecamp-email-modal-close {
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 24px;
   padding: 0;
   color: #666;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.2s;
 }
 
-.basecamp-email-search-content {
-  padding: 15px;
+.basecamp-email-modal-close:hover {
+  background-color: #f0f0f0;
+}
+
+/* Modal Content */
+.basecamp-email-modal-content {
+  padding: 20px 24px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.basecamp-email-search-section {
+  margin-bottom: 16px;
 }
 
 .basecamp-email-search-input {
   width: 100%;
-  padding: 8px 12px;
+  padding: 12px 16px;
   border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-  margin-bottom: 12px;
+  border-radius: 6px;
+  font-size: 16px;
   box-sizing: border-box;
 }
 
@@ -66,15 +91,17 @@
 }
 
 .basecamp-email-search-results {
-  max-height: 250px;
+  max-height: 400px;
   overflow-y: auto;
 }
 
 .basecamp-email-search-result {
-  padding: 10px;
+  padding: 16px;
   border-bottom: 1px solid #f0f0f0;
   cursor: pointer;
   transition: background-color 0.2s;
+  border-radius: 4px;
+  margin-bottom: 4px;
 }
 
 .basecamp-email-search-result:hover {
@@ -86,22 +113,27 @@
 }
 
 .basecamp-email-search-name {
-  font-weight: 500;
-  font-size: 14px;
+  font-weight: 600;
+  font-size: 16px;
   color: #333;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
 .basecamp-email-search-email {
-  font-size: 13px;
+  font-size: 14px;
   color: #666;
-  font-family: monospace;
+  font-family: 'Monaco', 'Menlo', monospace;
+  background: #f5f5f5;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
 }
 
 .basecamp-email-search-title-role {
-  font-size: 12px;
-  color: #999;
-  margin-top: 2px;
+  font-size: 13px;
+  color: #888;
+  margin-top: 6px;
+  font-style: italic;
 }
 
 .basecamp-email-search-loading {
@@ -130,14 +162,16 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.9);
   color: white;
-  padding: 8px 12px;
-  border-radius: 4px;
-  font-size: 12px;
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.3s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .basecamp-email-search-copied.show {

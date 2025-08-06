@@ -102,3 +102,4 @@ The API returns user objects with properties like:
 
 ## Memories
 - Latest discussion: Confirmed project structure and key technical requirements for Basecamp email extension
+- Remember, sadly you can't use Playwright to load and test extension
