@@ -129,27 +129,31 @@ class BasecampEmailSearch {
       return;
     }
 
-    // Create modal overlay
+    // Create modal overlay using Basecamp-style HTML structure
     this.modal = document.createElement('div');
     this.modal.className = 'basecamp-email-modal-overlay';
     
     this.modal.innerHTML = `
-      <div class="basecamp-email-modal">
-        <div class="basecamp-email-modal-header">
-          <h2>Team Emails</h2>
-          <button class="basecamp-email-modal-close">&times;</button>
+      <div class="modal-sheet modal-sheet--themed modal-sheet--jump-menu jump-menu__content-filter" role="combobox" aria-haspopup="listbox" aria-owns="jump-menu__results" aria-expanded="true" selected-index="0">
+        <input type="text" class="jump-menu__input-field" data-behavior="content_filter_input" placeholder="Search for team member emails..." autofocus="true" spellcheck="false" autocorrect="off" autocomplete="off" aria-owns="jump-menu__results" aria-controls="jump-menu__results" aria-labelledby="a-jump-menu__description" aria-autocomplete="list">
+
+        <div class="a-for-screen-reader">
+          <span id="a-jump-menu__status" data-role="content_filter_aria_status" role="status" aria-live="assertive">
+            Type to search for team member email addresses
+          </span>
+          <span id="a-jump-menu__description" data-role="content_filter_aria_description">
+            Type to search for team member email addresses
+          </span>
         </div>
-        <div class="basecamp-email-modal-content">
-          <div class="basecamp-email-search-section">
-            <input 
-              type="text" 
-              class="basecamp-email-search-input" 
-              placeholder="Search team members..."
-              autocomplete="off"
-            />
-          </div>
-          <div class="basecamp-email-search-results"></div>
+
+        <div class="jump-menu__results" id="jump-menu__results" role="listbox">
+          <section data-role="jump_menu_recent_history content_filter_group" class="">
+            <div class="jump-menu__group-title">Team Members</div>
+            <div class="basecamp-email-search-results"></div>
+          </section>
         </div>
+        
+        <button class="basecamp-email-modal-close" style="position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 24px; cursor: pointer; color: #666;">&times;</button>
         <div class="basecamp-email-search-copied">Copied to clipboard!</div>
       </div>
     `;
@@ -163,7 +167,7 @@ class BasecampEmailSearch {
 
   attachModalEventListeners() {
     const closeBtn = this.modal.querySelector('.basecamp-email-modal-close');
-    const input = this.modal.querySelector('.basecamp-email-search-input');
+    const input = this.modal.querySelector('.jump-menu__input-field');
     const results = this.modal.querySelector('.basecamp-email-search-results');
     const overlay = this.modal;
 
@@ -301,16 +305,21 @@ class BasecampEmailSearch {
     }
 
     results.innerHTML = users.map(user => `
-      <div class="basecamp-email-search-result" data-email="${user.email_address || ''}" data-name="${user.name || ''}">
-        <div class="basecamp-email-search-name">${this.escapeHtml(user.name || 'No name')}</div>
-        <div class="basecamp-email-search-email">${this.escapeHtml(user.email_address || 'No email')}</div>
-        ${user.title ? `<div class="basecamp-email-search-title-role">${this.escapeHtml(user.title)}</div>` : ''}
-      </div>
+      <article class="jump-menu__result" data-role="content_filterable" role="option" data-email="${user.email_address || ''}" data-name="${user.name || ''}">
+        <a class="jump-menu__link" data-role="content_filter_text" href="#">
+          <span class="jump-menu__icon jump-menu__icon--project"></span>
+          <span data-role="content_filter_aria_text">${this.escapeHtml(user.name || 'No name')}</span>
+          <span class="jump-menu__subtitle">${this.escapeHtml(user.email_address || 'No email')}</span>
+        </a>
+      </article>
     `).join('');
   }
 
   handleResultClick(event) {
-    const result = event.target.closest('.basecamp-email-search-result');
+    event.preventDefault();
+    event.stopPropagation();
+    
+    const result = event.target.closest('.jump-menu__result');
     if (!result) return;
 
     const email = result.getAttribute('data-email');
@@ -349,10 +358,19 @@ class BasecampEmailSearch {
     if (!this.modal) return;
     
     const copiedDiv = this.modal.querySelector('.basecamp-email-search-copied');
+    if (!copiedDiv) {
+      console.log('❌ Copied message div not found');
+      return;
+    }
+    
+    console.log('✅ Showing copied message');
+    // Show the message with CSS transition
     copiedDiv.classList.add('show');
     
+    // Hide after 2 seconds
     setTimeout(() => {
       copiedDiv.classList.remove('show');
+      console.log('✅ Hiding copied message');
     }, 2000);
   }
 

@@ -4,32 +4,37 @@
   <meta charset="utf-8">
   <style>
     body {
-      width: 300px;
-      padding: 20px;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    }
-    h1 {
-      font-size: 18px;
-      margin: 0 0 15px 0;
-      color: #333;
-    }
-    p {
-      margin: 0 0 10px 0;
-      color: #666;
-      font-size: 14px;
-      line-height: 1.4;
-    }
-    .logo {
-      text-align: center;
-      margin-bottom: 15px;
+      width: 480px;
+      height: 400px;
     }
   </style>
 </head>
 <body>
-  <div class="logo">
-    <h1>📧 Basecamp Email Search</h1>
+  <div class="modal-sheet modal-sheet--themed modal-sheet--jump-menu jump-menu__content-filter" role="combobox" aria-haspopup="listbox" aria-owns="jump-menu__results" aria-expanded="true" selected-index="0">
+    <input type="text" class="jump-menu__input-field" data-behavior="content_filter_input" placeholder="Search for team member emails..." autofocus="true" spellcheck="false" autocorrect="off" autocomplete="off" aria-owns="jump-menu__results" aria-controls="jump-menu__results" aria-labelledby="a-jump-menu__description" aria-autocomplete="list" aria-activedescendant="jump-history__0">
+
+    <div class="a-for-screen-reader">
+      <span id="a-jump-menu__status" data-role="content_filter_aria_status" role="status" aria-live="assertive">
+        Type to search for team member email addresses
+      </span>
+      <span id="a-jump-menu__description" data-role="content_filter_aria_description">
+        Type to search for team member email addresses
+      </span>
+    </div>
+
+    <div class="jump-menu__results" id="jump-menu__results" role="listbox" scrollable="">
+      <section data-role="jump_menu_recent_history content_filter_group" class="">
+        <div class="jump-menu__group-title">Team Members</div>
+      
+        <article class="jump-menu__result content-filter__selected" id="jump-history__0" data-role="content_filterable" role="option" aria-selected="true">
+          <a class="jump-menu__link" data-role="content_filter_text" href="#">
+            <span class="jump-menu__icon jump-menu__icon--project"></span>
+            <span data-role="content_filter_aria_text">
+              Loading team members...</span>
+          </a>
+        </article>
+      </section>
+    </div>
   </div>
-  <p>This extension adds a search interface to Basecamp pages for finding team member email addresses.</p>
-  <p>Navigate to any Basecamp project to use the search feature.</p>
 </body>
 </html>
