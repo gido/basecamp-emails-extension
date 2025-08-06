@@ -86,36 +86,18 @@ class BasecampEmailSearch {
   }
 
   addSeeEmailsButton() {
-    console.log('🔍 Looking for setup people button...');
+    console.log('🔍 Looking for project-avatars section...');
     
-    // Find the visible "Set up people" button by searching through all buttons
-    let setupPeopleButton = null;
-    const buttons = document.querySelectorAll('button, a');
+    // Find the project-avatars section to add the button
+    const projectAvatarsSection = document.querySelector('section.project-avatars[data-controller="desktop-modal"]');
     
-    for (let button of buttons) {
-      const text = button.textContent && button.textContent.trim();
-      if (text && text.includes('Set up people')) {
-        // Make sure it's visible (not in a hidden dropdown)
-        const styles = window.getComputedStyle(button);
-        if (styles.display !== 'none' && styles.visibility !== 'hidden') {
-          setupPeopleButton = button;
-          console.log('Found visible setup people button:', button);
-          break;
-        } else {
-          console.log('Found hidden setup people button (skipping):', button);
-        }
-      }
-    }
-    
-    console.log('Setup people button found:', setupPeopleButton);
-    
-    if (!setupPeopleButton) {
-      console.log('Setup people button not found, retrying in 500ms...');
+    if (!projectAvatarsSection) {
+      console.log('Project-avatars section not found, retrying in 500ms...');
       setTimeout(() => this.addSeeEmailsButton(), 500);
       return;
     }
 
-    console.log('✅ Setup people button found, creating See Emails button');
+    console.log('✅ Project-avatars section found, creating See Emails button');
     
     // Create the "See Emails" button
     this.button = document.createElement('a');
@@ -126,15 +108,9 @@ class BasecampEmailSearch {
     
     console.log('📧 See Emails button created:', this.button);
     
-    // Find the project-avatars section and add as last child
-    const projectAvatarsSection = document.querySelector('section.project-avatars[data-controller="desktop-modal"]');
-    
-    if (projectAvatarsSection) {
-      projectAvatarsSection.appendChild(this.button);
-      console.log('✅ Button added to project-avatars section');
-    } else {
-      console.log('❌ Could not find project-avatars section');
-    }
+    // Add button to the project-avatars section
+    projectAvatarsSection.appendChild(this.button);
+    console.log('✅ Button added to project-avatars section');
     
     console.log('✅ See Emails button inserted into DOM');
     
