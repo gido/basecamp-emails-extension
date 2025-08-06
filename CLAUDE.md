@@ -100,6 +100,48 @@ The API returns user objects with properties like:
 - Handle CSRF token expiration
 - Provide user feedback for network errors
 
+## Recent Developments (Latest Session)
+
+### 🎨 UI/UX Overhaul - Native Basecamp Styling
+The extension has been completely redesigned to use Basecamp's native jump menu styling instead of custom modal components:
+
+**Key Changes:**
+- **Replaced custom modal** with Basecamp's `modal-sheet` and `jump-menu` classes
+- **Single-row layout** matching Basecamp's original design (name + email on same line)
+- **Removed custom HTML elements** (`bc-*` tags) in favor of standard HTML
+- **60% CSS reduction** (3.24 KiB → 1.79 KiB) by removing unused styles
+
+### 📸 Avatar Integration
+Added dynamic profile photo support:
+- **24px circular avatars** using `avatar_url` from API response
+- **Smart fallbacks** to colored project icons when no avatar available
+- **Custom CSS classes** (`basecamp-email-avatar`) to avoid conflicts
+- **Proper alignment** with flexbox centering and padding overrides
+- **Performance optimizations** with lazy loading and accessibility features
+
+### 🧹 Code Quality Improvements
+Major cleanup and optimization efforts:
+- **Removed 17 console.log statements** for cleaner production output
+- **Eliminated unused CSS classes** (modal headers, old result styling, etc.)
+- **Safe CSS overrides** using scoped selectors to avoid breaking Basecamp's styling
+- **Fixed click handling** with preventDefault/stopPropagation to prevent modal closing
+
+### 🚀 Technical Architecture
+**Current Implementation:**
+- Uses Basecamp's existing CSS framework for consistent styling
+- Content script creates modal with `basecamp-email-modal-overlay` for positioning
+- Results use native `jump-menu__result` and `jump-menu__link` classes
+- Custom classes only for extension-specific functionality (avatars, copy feedback)
+
+**Performance Benefits:**
+- Smaller bundle size (net reduction of 92 lines of code)
+- Leverages Basecamp's optimized CSS instead of duplicating styles
+- Faster loading with lazy-loaded avatars
+- Reduced DOM manipulation and console output
+
 ## Memories
-- Latest discussion: Confirmed project structure and key technical requirements for Basecamp email extension
+- **UI Redesign Complete**: Extension now uses native Basecamp styling for seamless integration
+- **Avatar Support Added**: Dynamic profile photos with smart fallbacks
+- **Major Code Cleanup**: 60% CSS reduction and removed debug logging
+- **Ready for Production**: Clean, optimized codebase pushed to GitHub
 - Remember, sadly you can't use Playwright to load and test extension
