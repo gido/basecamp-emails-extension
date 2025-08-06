@@ -9,6 +9,28 @@ class BasecampEmailSearch {
     this.init();
   }
 
+  cleanup() {
+    // Remove existing button if it exists
+    if (this.button && this.button.parentNode) {
+      this.button.parentNode.removeChild(this.button);
+      this.button = null;
+    }
+    
+    // Remove existing modal if it exists
+    if (this.modal && this.modal.parentNode) {
+      this.modal.parentNode.removeChild(this.modal);
+      this.modal = null;
+    }
+    
+    // Clear any pending timeouts
+    if (this.debounceTimeout) {
+      clearTimeout(this.debounceTimeout);
+      this.debounceTimeout = null;
+    }
+    
+    console.log('🧹 Cleaned up previous extension instance');
+  }
+
   init() {
     console.log('🔍 Init called');
     console.log('URL:', window.location.href);
@@ -372,10 +394,35 @@ class BasecampEmailSearch {
   }
 }
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
-    new BasecampEmailSearch();
-  });
-} else {
-  new BasecampEmailSearch();
+// Global instance tracker to prevent duplicates
+let basecampEmailSearchInstance = null;
+
+// Initialize on page load
+function initializeExtension() {
+  console.log('🔄 Initializing extension...');
+  
+  // Clean up previous instance if it exists
+  if (basecampEmailSearchInstance) {
+    basecampEmailSearchInstance.cleanup();
+    basecampEmailSearchInstance = null;
+  }
+  
+  // Create new instance
+  basecampEmailSearchInstance = new BasecampEmailSearch();
 }
+
+// Handle initial page load
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeExtension);
+} else {
+  initializeExtension();
+}
+
+// Handle Turbo/SPA navigation (Basecamp uses Turbo for page transitions)
+document.addEventListener('turbo:load', initializeExtension);
+document.addEventListener('turbo:render', initializeExtension);
+
+// Fallback for older Turbolinks
+document.addEventListener('turbolinks:load', initializeExtension);
+
+console.log('📱 Basecamp Email Search Extension loaded with SPA navigation support');
