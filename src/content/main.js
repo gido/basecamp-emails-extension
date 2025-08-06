@@ -1,6 +1,5 @@
 class BasecampEmailSearch {
   constructor() {
-    console.log('🚀 BasecampEmailSearch constructor called');
     this.modal = null;
     this.button = null;
     this.users = [];
@@ -28,21 +27,13 @@ class BasecampEmailSearch {
       this.debounceTimeout = null;
     }
     
-    console.log('🧹 Cleaned up previous extension instance');
   }
 
   init() {
-    console.log('🔍 Init called');
-    console.log('URL:', window.location.href);
-    console.log('Hostname includes basecamp:', window.location.hostname.includes('basecamp.com'));
-    console.log('Path includes projects:', window.location.pathname.includes('/projects/'));
     
     if (!this.isProjectHomePage()) {
-      console.log('❌ Not a project home page, exiting');
       return;
     }
-
-    console.log('✅ Project home page detected, adding button');
     this.addSeeEmailsButton();
   }
 
@@ -53,7 +44,6 @@ class BasecampEmailSearch {
 
   extractUrlInfo() {
     const url = window.location.pathname;
-    console.log('🔍 Extracting from URL:', url);
     
     const accountMatch = url.match(/\/(\d+)\//);
     const projectMatch = url.match(/\/projects\/(\d+)/); // Remove trailing slash requirement
@@ -61,7 +51,6 @@ class BasecampEmailSearch {
     const accountId = accountMatch ? accountMatch[1] : null;
     const bucketId = projectMatch ? projectMatch[1] : null;
     
-    console.log('Account ID:', accountId, 'Bucket ID:', bucketId);
     
     return {
       accountId: accountId,
@@ -86,18 +75,15 @@ class BasecampEmailSearch {
   }
 
   addSeeEmailsButton() {
-    console.log('🔍 Looking for project-avatars section...');
     
     // Find the project-avatars section to add the button
     const projectAvatarsSection = document.querySelector('section.project-avatars[data-controller="desktop-modal"]');
     
     if (!projectAvatarsSection) {
-      console.log('Project-avatars section not found, retrying in 500ms...');
       setTimeout(() => this.addSeeEmailsButton(), 500);
       return;
     }
 
-    console.log('✅ Project-avatars section found, creating See Emails button');
     
     // Create the "See Emails" button
     this.button = document.createElement('a');
@@ -106,18 +92,14 @@ class BasecampEmailSearch {
     this.button.innerHTML = 'See Emails';
     this.button.style.cssText = 'margin-left: 20px;';
     
-    console.log('📧 See Emails button created:', this.button);
     
     // Add button to the project-avatars section
     projectAvatarsSection.appendChild(this.button);
-    console.log('✅ Button added to project-avatars section');
     
-    console.log('✅ See Emails button inserted into DOM');
     
     // Add click event listener
     this.button.addEventListener('click', (e) => {
       e.preventDefault();
-      console.log('📧 See Emails button clicked!');
       this.showEmailModal();
     });
   }
@@ -359,18 +341,15 @@ class BasecampEmailSearch {
     
     const copiedDiv = this.modal.querySelector('.basecamp-email-search-copied');
     if (!copiedDiv) {
-      console.log('❌ Copied message div not found');
       return;
     }
     
-    console.log('✅ Showing copied message');
     // Show the message with CSS transition
     copiedDiv.classList.add('show');
     
     // Hide after 2 seconds
     setTimeout(() => {
       copiedDiv.classList.remove('show');
-      console.log('✅ Hiding copied message');
     }, 2000);
   }
 
@@ -393,7 +372,6 @@ let basecampEmailSearchInstance = null;
 
 // Initialize on page load
 function initializeExtension() {
-  console.log('🔄 Initializing extension...');
   
   // Clean up previous instance if it exists
   if (basecampEmailSearchInstance) {
@@ -419,4 +397,3 @@ document.addEventListener('turbo:render', initializeExtension);
 // Fallback for older Turbolinks
 document.addEventListener('turbolinks:load', initializeExtension);
 
-console.log('📱 Basecamp Email Search Extension loaded with SPA navigation support');
