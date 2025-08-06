@@ -289,7 +289,10 @@ class BasecampEmailSearch {
     results.innerHTML = users.map(user => `
       <article class="jump-menu__result" data-role="content_filterable" role="option" data-email="${user.email_address || ''}" data-name="${user.name || ''}">
         <a class="jump-menu__link" data-role="content_filter_text" href="#">
-          <span class="jump-menu__icon jump-menu__icon--project"></span>
+          ${user.avatar_url ? 
+            `<img class="basecamp-email-avatar" src="${user.avatar_url}" alt="${this.escapeHtml(user.name || 'User')}" loading="lazy">` : 
+            `<span class="jump-menu__icon jump-menu__icon--project"></span>`
+          }
           <span data-role="content_filter_aria_text">${this.escapeHtml(user.name || 'No name')}</span>
           <span class="jump-menu__subtitle">${this.escapeHtml(user.email_address || 'No email')}</span>
         </a>

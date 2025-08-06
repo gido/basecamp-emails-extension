@@ -40,6 +40,27 @@
   /* Basecamp's jump-menu classes handle most styling */
 }
 
+/* Override Basecamp's jump-menu link padding for our results */
+.basecamp-email-search-results .jump-menu__link {
+  padding-inline-start: 0px;
+  align-items: center;
+  display: flex;
+}
+
+/* Custom avatar styling - uses own class to avoid conflicts */
+.basecamp-email-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  margin-right: 12px;
+  flex-shrink: 0;
+  object-fit: cover;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  /* Reset any inherited padding/margin */
+  padding: 0;
+  margin-left: 0;
+}
+
 /* Copy feedback message */
 .basecamp-email-search-copied {
   position: absolute;
