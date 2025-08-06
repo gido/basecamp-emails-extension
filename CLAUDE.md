@@ -99,3 +99,6 @@ The API returns user objects with properties like:
 - Graceful degradation when API is unavailable
 - Handle CSRF token expiration
 - Provide user feedback for network errors
+
+## Memories
+- Latest discussion: Confirmed project structure and key technical requirements for Basecamp email extension
