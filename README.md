@@ -258,14 +258,6 @@ We welcome contributions! Here's how to get started:
 
 This project is licensed under the **MIT License**.
 
-### MIT License Summary
-- ✅ Commercial use allowed
-- ✅ Modification allowed  
-- ✅ Distribution allowed
-- ✅ Private use allowed
-- ❌ No warranty provided
-- ❌ No liability accepted
-
 See the [LICENSE](LICENSE) file for the full license text.
 
 ## 🙏 Acknowledgments
