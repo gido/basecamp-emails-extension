@@ -52,6 +52,16 @@ Once the project is set up, common commands will include:
 - Testing: `npm test` - Run unit tests
 - Linting: `npm run lint` - Check code quality
 
+### Publishing & Release Commands
+The project includes automated versioning and packaging:
+- `npm run package:store` - Create zip for Chrome Web Store (current version)
+- `npm run prepare-release` - Bump version + create versioned release zip
+- `npm run version:patch` - Bump patch version (1.0.0 → 1.0.1) 
+- `npm run version:minor` - Bump minor version (1.0.0 → 1.1.0)
+- `npm run version:major` - Bump major version (1.0.0 → 2.0.0)
+
+Version sync utility (`scripts/sync-manifest-version.js`) ensures package.json and manifest.json versions stay synchronized.
+
 ## Implementation Details
 
 ### URL Pattern Detection
@@ -141,7 +151,18 @@ Major cleanup and optimization efforts:
 
 ## Memories
 - **UI Redesign Complete**: Extension now uses native Basecamp styling for seamless integration
-- **Avatar Support Added**: Dynamic profile photos with smart fallbacks
+- **Avatar Support Added**: Dynamic profile photos with smart fallbacks  
 - **Major Code Cleanup**: 60% CSS reduction and removed debug logging
+- **Production Build System**: Automated versioning and Chrome Web Store packaging
 - **Ready for Production**: Clean, optimized codebase pushed to GitHub
+- **Publishing Ready**: Version 1.0.2 with complete build/release pipeline
 - Remember, sadly you can't use Playwright to load and test extension
+
+### Latest Status (Current Session)
+- **Version**: 1.0.2 (automatically synced between package.json and manifest.json)
+- **Build System**: Complete with versioned releases and store-ready packages
+- **File Structure**: Clean organization with scripts/, releases/, and optimized dist/
+- **GitHub Repository**: https://github.com/gido/basecamp-emails-extension.git
+- **Package Files**: 
+  - `basecamp-email-extension.zip` (18.5 KB) - Chrome Web Store ready
+  - `releases/basecamp-email-extension-v1.0.2.zip` - Versioned release

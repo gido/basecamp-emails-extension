@@ -3,17 +3,18 @@
 A browser extension that adds a convenient email search modal to Basecamp project pages, allowing you to quickly find and copy team members' email addresses with just one click.
 
 ![Extension Demo](https://img.shields.io/badge/Browser-Firefox%20%7C%20Chrome-blue)
-![Version](https://img.shields.io/badge/Version-1.0.0-green)
+![Version](https://img.shields.io/badge/Version-1.0.2-green)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
 ## ✨ Features
 
 - 🔍 **Real-time Search**: Instant search results as you type (name, email, or title)
 - 📧 **One-click Copy**: Click any result to copy email address to clipboard
+- 📸 **Profile Photos**: 24px circular avatars for easy team member identification
+- 🎨 **Native Basecamp Styling**: Seamlessly integrated using Basecamp's jump menu design
 - 🎯 **Smart Integration**: Button appears only on project homepages next to "Set up people"
 - 🔒 **Secure Authentication**: Uses your existing Basecamp session, no additional login
-- ✨ **Clean Modal Interface**: Modern, centered modal with all team members loaded automatically
-- ⚡ **Fast Performance**: Debounced search with local caching
+- ⚡ **Fast Performance**: Debounced search with local caching, 60% smaller CSS bundle
 - ⌨️ **Keyboard Support**: ESC key to close, click outside to dismiss
 - 🌐 **Cross-browser**: Full support for Firefox and Chrome (Manifest V3)
 
@@ -87,11 +88,39 @@ A browser extension that adds a convenient email search modal to Basecamp projec
 ```bash
 # Development
 npm run build           # Build extension for production
+npm run dev            # Build with watch mode for development
 npm run lint           # Check code quality with ESLint  
-npm test              # Run unit tests (if available)
+npm test              # Run unit tests
 
-# Debugging
-npm run build:dev     # Build with source maps for debugging
+# Publishing & Releases
+npm run package:store   # Create zip for Chrome Web Store (current version)
+npm run prepare-release # Bump version + create versioned release zip
+npm run version:patch   # Bump patch version (1.0.0 → 1.0.1)
+npm run version:minor   # Bump minor version (1.0.0 → 1.1.0)  
+npm run version:major   # Bump major version (1.0.0 → 2.0.0)
+
+# Legacy packaging (separate Chrome/Firefox zips)
+npm run package        # Build and create both Chrome/Firefox packages
+npm run package:chrome # Create Chrome-specific package
+npm run package:firefox # Create Firefox-specific package
+```
+
+### Publishing Workflow
+
+#### Chrome Web Store Submission
+```bash
+# Quick package for immediate submission
+npm run package:store
+# → Creates: basecamp-email-extension.zip (ready for Chrome Web Store)
+```
+
+#### Versioned Releases
+```bash  
+# Create new release with automatic version bump
+npm run prepare-release
+# → Bumps version: 1.0.1 → 1.0.2
+# → Syncs package.json ↔ manifest.json versions  
+# → Creates: releases/basecamp-email-extension-v1.0.2.zip
 ```
 
 ### Project Structure
@@ -102,13 +131,16 @@ basecamp-emails-extension/
 │   ├── content/
 │   │   └── main.js          # Main content script with search logic
 │   ├── assets/
-│   │   ├── styles.css       # Widget styles and animations  
+│   │   ├── styles.css       # Minimal custom styles (1.79 KiB)
 │   │   ├── icon-16.png      # Extension icon (16x16)
 │   │   ├── icon-48.png      # Extension icon (48x48)  
 │   │   └── icon-128.png     # Extension icon (128x128)
 │   ├── popup/
-│   │   └── popup.html       # Extension popup (optional)
+│   │   └── popup.html       # Extension popup with Basecamp styling
 │   └── manifest.json        # Extension manifest (v3)
+├── scripts/
+│   └── sync-manifest-version.js  # Version sync utility
+├── releases/                # Versioned release packages
 ├── dist/                    # Built extension files  
 ├── webpack.config.js        # Webpack build configuration
 ├── package.json            # Dependencies and scripts

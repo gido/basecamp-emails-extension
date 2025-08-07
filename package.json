@@ -1,6 +1,6 @@
 {
   "name": "basecamp-emails-extension",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Browser extension to search email addresses of Basecamp team users",
   "main": "src/content/main.js",
   "scripts": {
@@ -10,7 +10,12 @@
     "package:chrome": "cd dist && zip -r ../basecamp-emails-chrome.zip .",
     "package:firefox": "cd dist && zip -r ../basecamp-emails-firefox.zip .",
     "test": "jest",
-    "lint": "eslint src/**/*.js"
+    "lint": "eslint src/**/*.js",
+    "version:patch": "npm version patch --no-git-tag-version && node scripts/sync-manifest-version.js",
+    "version:minor": "npm version minor --no-git-tag-version && node scripts/sync-manifest-version.js",
+    "version:major": "npm version major --no-git-tag-version && node scripts/sync-manifest-version.js",
+    "prepare-release": "npm run version:patch && npm run build && mkdir -p releases && cd dist && zip -r ../releases/basecamp-email-extension-v$(node -p \"require('../package.json').version\").zip . && cd .. && echo \"✅ Release package created: releases/basecamp-email-extension-v$(node -p \"require('./package.json').version\").zip\"",
+    "package:store": "npm run build && cd dist && zip -r ../basecamp-email-extension.zip . && cd .. && echo \"✅ Extension package ready for Chrome Web Store: basecamp-email-extension.zip\""
   },
   "keywords": [
     "basecamp",

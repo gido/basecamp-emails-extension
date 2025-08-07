@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Basecamp Email Search",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Search email addresses of all Basecamp team users",
   "permissions": [
     "activeTab"
@@ -16,8 +16,12 @@
         "https://*.basecamp.com/*",
         "https://3.basecamp.com/*"
       ],
-      "js": ["content/main.js"],
-      "css": ["assets/styles.css"],
+      "js": [
+        "content/main.js"
+      ],
+      "css": [
+        "assets/styles.css"
+      ],
       "run_at": "document_idle"
     }
   ],
@@ -32,8 +36,13 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["assets/*"],
-      "matches": ["https://*.basecamp.com/*", "https://3.basecamp.com/*"]
+      "resources": [
+        "assets/*"
+      ],
+      "matches": [
+        "https://*.basecamp.com/*",
+        "https://3.basecamp.com/*"
+      ]
     }
   ],
   "browser_specific_settings": {
