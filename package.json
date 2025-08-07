@@ -1,6 +1,6 @@
 {
   "name": "basecamp-emails-extension",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Browser extension to search email addresses of Basecamp team users",
   "main": "src/content/main.js",
   "scripts": {
@@ -15,7 +15,9 @@
     "version:minor": "npm version minor --no-git-tag-version && node scripts/sync-manifest-version.js",
     "version:major": "npm version major --no-git-tag-version && node scripts/sync-manifest-version.js",
     "prepare-release": "npm run version:patch && npm run build && mkdir -p releases && cd dist && zip -r ../releases/basecamp-email-extension-v$(node -p \"require('../package.json').version\").zip . && cd .. && echo \"✅ Release package created: releases/basecamp-email-extension-v$(node -p \"require('./package.json').version\").zip\"",
-    "package:store": "npm run build && cd dist && zip -r ../basecamp-email-extension.zip . && cd .. && echo \"✅ Extension package ready for Chrome Web Store: basecamp-email-extension.zip\""
+    "package:store": "npm run build && cd dist && zip -r ../basecamp-email-extension.zip . && cd .. && echo \"✅ Extension package ready for Chrome Web Store: basecamp-email-extension.zip\"",
+    "icons:generate": "convert src/assets/icon-original.png -resize 16x16 src/assets/icon-16.png && convert src/assets/icon-original.png -resize 48x48 src/assets/icon-48.png && convert src/assets/icon-original.png -resize 128x128 src/assets/icon-128.png && echo '✅ Icons generated successfully'",
+    "screenshots:prepare": "mkdir -p graphic-assets/store-ready && convert graphic-assets/button-see-emails.png -resize 1280x800^ -gravity center -extent 1280x800 -background white -alpha remove graphic-assets/store-ready/screenshot-1-button.png && convert graphic-assets/opened.png -resize 1280x800^ -gravity center -extent 1280x800 -background white -alpha remove graphic-assets/store-ready/screenshot-2-modal.png && echo '✅ Screenshots prepared for Chrome Web Store in graphic-assets/store-ready/'"
   },
   "keywords": [
     "basecamp",

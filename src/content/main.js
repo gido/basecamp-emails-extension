@@ -89,7 +89,7 @@ class BasecampEmailSearch {
     this.button = document.createElement('a');
     this.button.href = '#';
     this.button.className = 'btn btn--small';
-    this.button.innerHTML = 'See Emails';
+    this.button.textContent = 'See Emails';
     this.button.style.cssText = 'margin-left: 20px;';
     
     

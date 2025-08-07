@@ -1,19 +1,17 @@
 {
   "manifest_version": 3,
   "name": "Basecamp Email Search",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Search email addresses of all Basecamp team users",
   "permissions": [
     "activeTab"
   ],
   "host_permissions": [
-    "https://*.basecamp.com/*",
     "https://3.basecamp.com/*"
   ],
   "content_scripts": [
     {
       "matches": [
-        "https://*.basecamp.com/*",
         "https://3.basecamp.com/*"
       ],
       "js": [
@@ -40,7 +38,6 @@
         "assets/*"
       ],
       "matches": [
-        "https://*.basecamp.com/*",
         "https://3.basecamp.com/*"
       ]
     }
