@@ -159,10 +159,44 @@ Major cleanup and optimization efforts:
 - Remember, sadly you can't use Playwright to load and test extension
 
 ### Latest Status (Current Session)
-- **Version**: 1.0.2 (automatically synced between package.json and manifest.json)
-- **Build System**: Complete with versioned releases and store-ready packages
+- **Version**: 1.0.4 (automatically synced between package.json and manifest.json)
+- **Build System**: Complete with versioned releases, store-ready packages, and source code packaging
 - **File Structure**: Clean organization with scripts/, releases/, and optimized dist/
 - **GitHub Repository**: https://github.com/gido/basecamp-emails-extension.git
 - **Package Files**: 
-  - `basecamp-email-extension.zip` (18.5 KB) - Chrome Web Store ready
-  - `releases/basecamp-email-extension-v1.0.2.zip` - Versioned release
+  - Extension package: `releases/basecamp-email-extension-v1.0.4.zip` (31.5 KB)
+  - Source package: `releases/basecamp-email-extension-source-v1.0.4.zip` (768 KB) for Firefox submission
+- **Publishing Status**: 
+  - ✅ Chrome Web Store: Successfully submitted
+  - ✅ Firefox Add-ons: Security issues fixed, ready for resubmission with source code
+
+### 🔐 Security & Publishing Improvements (v1.0.4)
+- **Firefox Security Compliance**: Completely replaced innerHTML usage with safe DOM manipulation
+- **XSS Prevention**: Added `createSafeElement()` and `clearElement()` helper functions
+- **Source Code Packaging**: Added automated source code zip generation for Firefox review
+- **Modal Bug Fixes**: Fixed positioning and search field behavior issues
+
+## Maintenance Instructions
+
+### 📝 CHANGELOG Maintenance
+**IMPORTANT**: Keep `CHANGELOG.md` updated following [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format:
+
+- **When making changes**: Always update CHANGELOG.md in the same commit
+- **Version sections**: Use `[X.Y.Z] - YYYY-MM-DD` format for releases
+- **Categories**: Use `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `Security`
+- **Unreleased section**: Add new changes to `[Unreleased]` first, then move to version section on release
+- **Version links**: Update version comparison links at bottom of file
+
+**Example workflow:**
+1. Make code changes
+2. Update `[Unreleased]` section in CHANGELOG.md
+3. Commit both together
+4. On release: move changes from `[Unreleased]` to new version section
+
+### 🔄 Version Release Process
+When releasing a new version:
+1. Move changes from `[Unreleased]` to new version section in CHANGELOG.md
+2. Run `npm run prepare-release` (auto-bumps version + builds packages)
+3. Commit changelog and version changes
+4. Tag release in git: `git tag v1.0.X`
+5. Push to GitHub: `git push origin main --tags`
