@@ -106,8 +106,8 @@ class BasecampEmailSearch {
 
   showEmailModal() {
     if (this.modal) {
-      // Modal already exists, just show it
-      this.modal.style.display = 'block';
+      // Modal already exists, just show it with proper centering
+      this.modal.style.display = 'flex';
       return;
     }
 
