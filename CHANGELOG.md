@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.5] - 2024-08-08
+
 ### Fixed
 - Fixed modal positioning bug where modal would become left-aligned when reopening
 - Fixed search field behavior to show all team members when input is cleared instead of empty state
