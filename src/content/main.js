@@ -239,12 +239,12 @@ class BasecampEmailSearch {
   handleSearch(query) {
     clearTimeout(this.debounceTimeout);
     
-    if (!query.trim()) {
-      this.clearResults();
-      return;
-    }
-
     this.debounceTimeout = setTimeout(() => {
+      if (!query.trim()) {
+        // Show all users when search is empty
+        this.loadAllTeamMembers();
+        return;
+      }
       this.searchUsers(query.trim());
     }, 300);
   }
