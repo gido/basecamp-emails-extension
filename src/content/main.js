@@ -261,16 +261,13 @@ class BasecampEmailSearch {
   }
 
   handleSearch(query) {
-    clearTimeout(this.debounceTimeout);
-    
-    this.debounceTimeout = setTimeout(() => {
-      if (!query.trim()) {
-        // Show all users when search is empty
-        this.loadAllTeamMembers();
-        return;
-      }
-      this.searchUsers(query.trim());
-    }, 300);
+    // Since we're filtering cached data locally, search can be instant
+    if (!query.trim()) {
+      // Show all users when search is empty
+      this.loadAllTeamMembers();
+      return;
+    }
+    this.searchUsers(query.trim());
   }
 
   async loadAllTeamMembers() {
@@ -303,10 +300,6 @@ class BasecampEmailSearch {
       return;
     }
     
-    this.clearElement(results);
-    const searchingDiv = this.createSafeElement('div', 'basecamp-email-search-loading', 'Searching...');
-    results.appendChild(searchingDiv);
-
     try {
       const users = await this.fetchUsers();
       const filteredUsers = this.filterUsers(users, query);

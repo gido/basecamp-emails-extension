@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added automatic focus to search input field when modal opens for immediate typing
 - Added unique CSS class `basecamp-email-search-button` for reliable button identification
 
+### Changed
+- Improved search performance by removing unnecessary 300ms debounce delay for instant local filtering
+- Removed "Searching..." loading indicator since search is now instant on cached data
+
 ## [1.0.4] - 2024-08-08
 
 ### Fixed
