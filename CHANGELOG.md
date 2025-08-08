@@ -10,9 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixed modal positioning bug where modal would become left-aligned when reopening
 - Fixed search field behavior to show all team members when input is cleared instead of empty state
+- Fixed duplicate button bug during SPA navigation by adding unique class detection
 
 ### Added
 - Added automatic focus to search input field when modal opens for immediate typing
+- Added unique CSS class `basecamp-email-search-button` for reliable button identification
 
 ## [1.0.4] - 2024-08-08
 

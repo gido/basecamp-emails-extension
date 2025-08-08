@@ -15,6 +15,14 @@ class BasecampEmailSearch {
       this.button = null;
     }
     
+    // Also remove any orphaned buttons from previous instances
+    const orphanedButtons = document.querySelectorAll('.basecamp-email-search-button');
+    orphanedButtons.forEach(button => {
+      if (button.parentNode) {
+        button.parentNode.removeChild(button);
+      }
+    });
+    
     // Remove existing modal if it exists
     if (this.modal && this.modal.parentNode) {
       this.modal.parentNode.removeChild(this.modal);
@@ -84,11 +92,19 @@ class BasecampEmailSearch {
       return;
     }
 
+    // Check if a "See Emails" button already exists on this page
+    const existingButton = document.querySelector('.basecamp-email-search-button');
+    
+    if (existingButton) {
+      // Button already exists, just update reference and return
+      this.button = existingButton;
+      return;
+    }
     
     // Create the "See Emails" button
     this.button = document.createElement('a');
     this.button.href = '#';
-    this.button.className = 'btn btn--small';
+    this.button.className = 'btn btn--small basecamp-email-search-button';
     this.button.textContent = 'See Emails';
     this.button.style.cssText = 'margin-left: 20px;';
     
