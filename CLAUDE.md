@@ -159,22 +159,36 @@ Major cleanup and optimization efforts:
 - Remember, sadly you can't use Playwright to load and test extension
 
 ### Latest Status (Current Session)
-- **Version**: 1.0.4 (automatically synced between package.json and manifest.json)
+- **Version**: 1.0.5 (automatically synced between package.json and manifest.json)
 - **Build System**: Complete with versioned releases, store-ready packages, and source code packaging
 - **File Structure**: Clean organization with scripts/, releases/, and optimized dist/
 - **GitHub Repository**: https://github.com/gido/basecamp-emails-extension.git
 - **Package Files**: 
-  - Extension package: `releases/basecamp-email-extension-v1.0.4.zip` (31.5 KB)
-  - Source package: `releases/basecamp-email-extension-source-v1.0.4.zip` (768 KB) for Firefox submission
+  - Extension package: `releases/basecamp-email-extension-v1.0.5.zip` (31.8 KB)
+  - Source package: `releases/basecamp-email-extension-source-v1.0.5.zip` (771 KB) for Firefox submission
 - **Publishing Status**: 
-  - ✅ Chrome Web Store: Successfully submitted
-  - ✅ Firefox Add-ons: Security issues fixed, ready for resubmission with source code
+  - ✅ Chrome Web Store: Ready for v1.0.5 submission
+  - ✅ Firefox Add-ons: Ready for v1.0.5 resubmission with all security issues resolved
 
-### 🔐 Security & Publishing Improvements (v1.0.4)
+### 🔐 Security & Publishing Journey (v1.0.4)
 - **Firefox Security Compliance**: Completely replaced innerHTML usage with safe DOM manipulation
 - **XSS Prevention**: Added `createSafeElement()` and `clearElement()` helper functions
 - **Source Code Packaging**: Added automated source code zip generation for Firefox review
-- **Modal Bug Fixes**: Fixed positioning and search field behavior issues
+
+### 🐛 Bug Fixes & UX Improvements (v1.0.5)
+- **Modal Positioning**: Fixed left-alignment bug when reopening modal (flexbox display fix)
+- **Search Field Behavior**: Fixed to show all users when input is cleared instead of empty state
+- **Duplicate Buttons**: Fixed SPA navigation bug by adding unique `.basecamp-email-search-button` class
+- **Input Focus**: Added automatic focus to search field when modal opens
+- **Instant Search**: Removed unnecessary 300ms debounce delay for lightning-fast local filtering
+- **Performance**: Removed "Searching..." loading indicator since search is now instant on cached data
+
+### 🏗️ Technical Architecture Insights
+- **Safe DOM Manipulation**: All UI creation now uses `createElement()` and `textContent` patterns
+- **Reliable Element Detection**: Uses unique CSS classes for button/modal identification
+- **SPA Navigation Handling**: Proper cleanup and duplicate detection for Basecamp's Turbo navigation
+- **Local Search Performance**: Instant filtering on cached `this.users` array without network requests
+- **Error Resilience**: Graceful fallbacks and cleanup for edge cases
 
 ## Maintenance Instructions
 
@@ -200,3 +214,34 @@ When releasing a new version:
 3. Commit changelog and version changes
 4. Tag release in git: `git tag v1.0.X`
 5. Push to GitHub: `git push origin main --tags`
+
+## Key Learnings & Insights
+
+### 🔒 Browser Extension Security
+- **Firefox Review Process**: Firefox has stricter security review than Chrome
+- **innerHTML is Forbidden**: Any use of innerHTML triggers security warnings - use createElement() instead
+- **Source Code Required**: Firefox requires source code submission for extensions with build processes
+- **XSS Prevention**: All user data must use textContent, never innerHTML, even for trusted data
+
+### ⚡ Performance Optimization Patterns  
+- **Debounce Not Always Needed**: 300ms delay was unnecessary for local array filtering
+- **Cache API Responses**: Load data once, filter locally for instant search
+- **Remove Loading Indicators**: For instant operations, loading states add perceived delay
+- **User Expectations**: Local search should feel instant, any delay feels broken
+
+### 🎯 SPA Navigation Challenges
+- **Basecamp Uses Turbo**: Listen for `turbo:load` and `turbo:render` events
+- **Cleanup is Critical**: Always remove previous instances before adding new ones
+- **Unique CSS Classes**: Essential for reliable element detection across page transitions
+- **Instance Management**: Use global instance tracker to prevent duplicates
+
+### 🧪 Extension Development Best Practices
+- **Class-Based Detection**: `.my-unique-class` more reliable than complex selectors
+- **Safe DOM Patterns**: `createElement()` + `textContent` + `appendChild()` prevents XSS
+- **Error Boundaries**: Graceful fallbacks when Basecamp's DOM changes
+- **Build Automation**: Version syncing between package.json and manifest.json prevents errors
+
+### 📦 Distribution Strategy
+- **Two Packages**: Extension zip + source zip for Firefox compliance
+- **Version Tagging**: Git tags essential for release tracking
+- **Changelog Discipline**: Keep detailed records - helps with debugging and user communication
