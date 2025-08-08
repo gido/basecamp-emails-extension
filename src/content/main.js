@@ -108,6 +108,11 @@ class BasecampEmailSearch {
     if (this.modal) {
       // Modal already exists, just show it with proper centering
       this.modal.style.display = 'flex';
+      // Focus the search input when reopening modal
+      const input = this.modal.querySelector('.jump-menu__input-field');
+      if (input) {
+        input.focus();
+      }
       return;
     }
 
@@ -201,6 +206,9 @@ class BasecampEmailSearch {
     
     document.body.appendChild(this.modal);
     this.attachModalEventListeners();
+    
+    // Focus the search input
+    searchInput.focus();
     
     // Auto-load all team members
     this.loadAllTeamMembers();
