@@ -7,12 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Fixed modal positioning bug where modal would become left-aligned when reopening
+- Fixed search field behavior to show all team members when input is cleared instead of empty state
+
+### Added
+- Added automatic focus to search input field when modal opens for immediate typing
+
 ## [1.0.4] - 2024-08-08
 
 ### Fixed
 - Fixed Firefox security warnings by replacing all innerHTML usage with safe DOM manipulation methods
-- Fixed modal positioning bug where modal would become left-aligned when reopening
-- Fixed search field behavior to show all team members when input is cleared instead of empty state
 
 ### Added
 - Added source code packaging script for Firefox Add-ons submission
