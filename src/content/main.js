@@ -111,34 +111,93 @@ class BasecampEmailSearch {
       return;
     }
 
-    // Create modal overlay using Basecamp-style HTML structure
+    // Create modal overlay using safe DOM methods
     this.modal = document.createElement('div');
     this.modal.className = 'basecamp-email-modal-overlay';
     
-    this.modal.innerHTML = `
-      <div class="modal-sheet modal-sheet--themed modal-sheet--jump-menu jump-menu__content-filter" role="combobox" aria-haspopup="listbox" aria-owns="jump-menu__results" aria-expanded="true" selected-index="0">
-        <input type="text" class="jump-menu__input-field" data-behavior="content_filter_input" placeholder="Search for team member emails..." autofocus="true" spellcheck="false" autocorrect="off" autocomplete="off" aria-owns="jump-menu__results" aria-controls="jump-menu__results" aria-labelledby="a-jump-menu__description" aria-autocomplete="list">
+    // Create modal content container
+    const modalContent = document.createElement('div');
+    modalContent.className = 'modal-sheet modal-sheet--themed modal-sheet--jump-menu jump-menu__content-filter';
+    modalContent.setAttribute('role', 'combobox');
+    modalContent.setAttribute('aria-haspopup', 'listbox');
+    modalContent.setAttribute('aria-owns', 'jump-menu__results');
+    modalContent.setAttribute('aria-expanded', 'true');
+    modalContent.setAttribute('selected-index', '0');
 
-        <div class="a-for-screen-reader">
-          <span id="a-jump-menu__status" data-role="content_filter_aria_status" role="status" aria-live="assertive">
-            Type to search for team member email addresses
-          </span>
-          <span id="a-jump-menu__description" data-role="content_filter_aria_description">
-            Type to search for team member email addresses
-          </span>
-        </div>
+    // Create search input
+    const searchInput = document.createElement('input');
+    searchInput.type = 'text';
+    searchInput.className = 'jump-menu__input-field';
+    searchInput.setAttribute('data-behavior', 'content_filter_input');
+    searchInput.placeholder = 'Search for team member emails...';
+    searchInput.autofocus = true;
+    searchInput.spellcheck = false;
+    searchInput.autocorrect = 'off';
+    searchInput.autocomplete = 'off';
+    searchInput.setAttribute('aria-owns', 'jump-menu__results');
+    searchInput.setAttribute('aria-controls', 'jump-menu__results');
+    searchInput.setAttribute('aria-labelledby', 'a-jump-menu__description');
+    searchInput.setAttribute('aria-autocomplete', 'list');
 
-        <div class="jump-menu__results" id="jump-menu__results" role="listbox">
-          <section data-role="jump_menu_recent_history content_filter_group" class="">
-            <div class="jump-menu__group-title">Team Members</div>
-            <div class="basecamp-email-search-results"></div>
-          </section>
-        </div>
-        
-        <button class="basecamp-email-modal-close" style="position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 24px; cursor: pointer; color: #666;">&times;</button>
-        <div class="basecamp-email-search-copied">Copied to clipboard!</div>
-      </div>
-    `;
+    // Create screen reader elements
+    const screenReaderDiv = document.createElement('div');
+    screenReaderDiv.className = 'a-for-screen-reader';
+    
+    const statusSpan = document.createElement('span');
+    statusSpan.id = 'a-jump-menu__status';
+    statusSpan.setAttribute('data-role', 'content_filter_aria_status');
+    statusSpan.setAttribute('role', 'status');
+    statusSpan.setAttribute('aria-live', 'assertive');
+    statusSpan.textContent = 'Type to search for team member email addresses';
+    
+    const descSpan = document.createElement('span');
+    descSpan.id = 'a-jump-menu__description';
+    descSpan.setAttribute('data-role', 'content_filter_aria_description');
+    descSpan.textContent = 'Type to search for team member email addresses';
+    
+    screenReaderDiv.appendChild(statusSpan);
+    screenReaderDiv.appendChild(descSpan);
+
+    // Create results container
+    const resultsDiv = document.createElement('div');
+    resultsDiv.className = 'jump-menu__results';
+    resultsDiv.id = 'jump-menu__results';
+    resultsDiv.setAttribute('role', 'listbox');
+    
+    const section = document.createElement('section');
+    section.setAttribute('data-role', 'jump_menu_recent_history content_filter_group');
+    section.className = '';
+    
+    const groupTitle = document.createElement('div');
+    groupTitle.className = 'jump-menu__group-title';
+    groupTitle.textContent = 'Team Members';
+    
+    const searchResults = document.createElement('div');
+    searchResults.className = 'basecamp-email-search-results';
+    
+    section.appendChild(groupTitle);
+    section.appendChild(searchResults);
+    resultsDiv.appendChild(section);
+
+    // Create close button
+    const closeButton = document.createElement('button');
+    closeButton.className = 'basecamp-email-modal-close';
+    closeButton.style.cssText = 'position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 24px; cursor: pointer; color: #666;';
+    closeButton.textContent = '×';
+
+    // Create copied message
+    const copiedDiv = document.createElement('div');
+    copiedDiv.className = 'basecamp-email-search-copied';
+    copiedDiv.textContent = 'Copied to clipboard!';
+
+    // Assemble modal
+    modalContent.appendChild(searchInput);
+    modalContent.appendChild(screenReaderDiv);
+    modalContent.appendChild(resultsDiv);
+    modalContent.appendChild(closeButton);
+    modalContent.appendChild(copiedDiv);
+    
+    this.modal.appendChild(modalContent);
     
     document.body.appendChild(this.modal);
     this.attachModalEventListeners();
@@ -192,7 +251,9 @@ class BasecampEmailSearch {
 
   async loadAllTeamMembers() {
     const results = this.modal.querySelector('.basecamp-email-search-results');
-    results.innerHTML = '<div class="basecamp-email-search-loading">Loading team members...</div>';
+    this.clearElement(results);
+    const loadingDiv = this.createSafeElement('div', 'basecamp-email-search-loading', 'Loading team members...');
+    results.appendChild(loadingDiv);
 
     try {
       const users = await this.fetchUsers();
@@ -200,7 +261,9 @@ class BasecampEmailSearch {
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('Error loading users:', error);
-      results.innerHTML = '<div class="basecamp-email-search-error">Error loading team members. Please try again.</div>';
+      this.clearElement(results);
+      const errorDiv = this.createSafeElement('div', 'basecamp-email-search-error', 'Error loading team members. Please try again.');
+      results.appendChild(errorDiv);
     }
   }
 
@@ -216,7 +279,9 @@ class BasecampEmailSearch {
       return;
     }
     
-    results.innerHTML = '<div class="basecamp-email-search-loading">Searching...</div>';
+    this.clearElement(results);
+    const searchingDiv = this.createSafeElement('div', 'basecamp-email-search-loading', 'Searching...');
+    results.appendChild(searchingDiv);
 
     try {
       const users = await this.fetchUsers();
@@ -225,7 +290,9 @@ class BasecampEmailSearch {
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('Error searching users:', error);
-      results.innerHTML = '<div class="basecamp-email-search-error">Error loading users. Please try again.</div>';
+      this.clearElement(results);
+      const errorDiv = this.createSafeElement('div', 'basecamp-email-search-error', 'Error loading users. Please try again.');
+      results.appendChild(errorDiv);
     }
   }
 
@@ -282,22 +349,55 @@ class BasecampEmailSearch {
     const results = this.modal.querySelector('.basecamp-email-search-results');
     
     if (users.length === 0) {
-      results.innerHTML = '<div class="basecamp-email-search-no-results">No team members found</div>';
+      this.clearElement(results);
+      const noResultsDiv = this.createSafeElement('div', 'basecamp-email-search-no-results', 'No team members found');
+      results.appendChild(noResultsDiv);
       return;
     }
 
-    results.innerHTML = users.map(user => `
-      <article class="jump-menu__result" data-role="content_filterable" role="option" data-email="${user.email_address || ''}" data-name="${user.name || ''}">
-        <a class="jump-menu__link" data-role="content_filter_text" href="#">
-          ${user.avatar_url ? 
-            `<img class="basecamp-email-avatar" src="${user.avatar_url}" alt="${this.escapeHtml(user.name || 'User')}" loading="lazy">` : 
-            `<span class="jump-menu__icon jump-menu__icon--project"></span>`
-          }
-          <span data-role="content_filter_aria_text">${this.escapeHtml(user.name || 'No name')}</span>
-          <span class="jump-menu__subtitle">${this.escapeHtml(user.email_address || 'No email')}</span>
-        </a>
-      </article>
-    `).join('');
+    this.clearElement(results);
+    users.forEach(user => {
+      const article = document.createElement('article');
+      article.className = 'jump-menu__result';
+      article.setAttribute('data-role', 'content_filterable');
+      article.setAttribute('role', 'option');
+      article.setAttribute('data-email', user.email_address || '');
+      article.setAttribute('data-name', user.name || '');
+
+      const link = document.createElement('a');
+      link.className = 'jump-menu__link';
+      link.setAttribute('data-role', 'content_filter_text');
+      link.href = '#';
+
+      // Add avatar or icon
+      if (user.avatar_url) {
+        const avatar = document.createElement('img');
+        avatar.className = 'basecamp-email-avatar';
+        avatar.src = user.avatar_url;
+        avatar.alt = user.name || 'User';
+        avatar.loading = 'lazy';
+        link.appendChild(avatar);
+      } else {
+        const icon = document.createElement('span');
+        icon.className = 'jump-menu__icon jump-menu__icon--project';
+        link.appendChild(icon);
+      }
+
+      // Add name
+      const nameSpan = document.createElement('span');
+      nameSpan.setAttribute('data-role', 'content_filter_aria_text');
+      nameSpan.textContent = user.name || 'No name';
+      link.appendChild(nameSpan);
+
+      // Add email
+      const emailSpan = document.createElement('span');
+      emailSpan.className = 'jump-menu__subtitle';
+      emailSpan.textContent = user.email_address || 'No email';
+      link.appendChild(emailSpan);
+
+      article.appendChild(link);
+      results.appendChild(article);
+    });
   }
 
   handleResultClick(event) {
@@ -360,13 +460,26 @@ class BasecampEmailSearch {
     if (!this.modal) return;
     
     const results = this.modal.querySelector('.basecamp-email-search-results');
-    results.innerHTML = '';
+    this.clearElement(results);
   }
 
   escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+  }
+
+  createSafeElement(tag, className, textContent) {
+    const element = document.createElement(tag);
+    if (className) element.className = className;
+    if (textContent) element.textContent = textContent;
+    return element;
+  }
+
+  clearElement(element) {
+    while (element.firstChild) {
+      element.removeChild(element.firstChild);
+    }
   }
 }
 

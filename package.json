@@ -1,6 +1,6 @@
 {
   "name": "basecamp-emails-extension",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Browser extension to search email addresses of Basecamp team users",
   "main": "src/content/main.js",
   "scripts": {
