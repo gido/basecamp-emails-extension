@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+- Removed unused popup.html file and popup directory
+- Removed popup action from manifest.json as extension only uses content scripts
+
 ## [1.0.5] - 2024-08-08
 
 ### Fixed
