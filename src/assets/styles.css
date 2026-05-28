@@ -14,51 +14,63 @@
   align-items: center;
 }
 
-/* Close button for the modal */
-.basecamp-email-modal-close {
+/* Size the floating modal sheet. Basecamp's .nav-menu__sheet--jump is anchored
+   to its trigger via absolute positioning (left/right offsets, negative margin).
+   Reset those so flex-centering on the overlay works. */
+.basecamp-email-modal-overlay .nav-menu__sheet--jump {
+  position: relative;
+  inset: auto;
+  margin: 0;
+  width: min(560px, 90vw);
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.basecamp-email-modal-overlay .nav-menu__scroller {
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Reset the native nav-menu link padding for our avatar+name+email rows */
+.basecamp-email-search-results .nav-menu__link {
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  text-align: left;
   background: none;
-  border: none;
+  border: 0;
   cursor: pointer;
-  font-size: 24px;
-  padding: 0;
-  color: #666;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-  transition: background-color 0.2s;
 }
 
-.basecamp-email-modal-close:hover {
-  background-color: #f0f0f0;
+.basecamp-email-search-results .nav-menu__subtitle {
+  margin-left: auto;
 }
 
-/* Results container - uses Basecamp's native styling for most layout */
-.basecamp-email-search-results {
-  /* Basecamp's jump-menu classes handle most styling */
+/* Basecamp's .nav-menu__subtitle adds a "- " separator via ::before because it
+   normally sits after a title on the same row. We use it standalone on the right
+   side of the row, so suppress the separator. */
+.basecamp-email-search-results .nav-menu__subtitle::before {
+  content: none;
 }
 
-/* Override Basecamp's jump-menu link padding for our results */
-.basecamp-email-search-results .jump-menu__link {
-  padding-inline-start: 0px;
-  align-items: center;
-  display: flex;
-}
-
-/* Custom avatar styling - uses own class to avoid conflicts */
+/* Custom avatar styling */
 .basecamp-email-avatar {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  margin-right: 12px;
   flex-shrink: 0;
   object-fit: cover;
   border: 1px solid rgba(0, 0, 0, 0.1);
-  /* Reset any inherited padding/margin */
   padding: 0;
-  margin-left: 0;
+  margin: 0;
+}
+
+.basecamp-email-avatar--placeholder {
+  background: #d8dde0;
+  display: inline-block;
 }
 
 /* Copy feedback message */

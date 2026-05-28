@@ -83,37 +83,49 @@ class BasecampEmailSearch {
   }
 
   addSeeEmailsButton() {
-    
-    // Find the project-avatars section to add the button
-    const projectAvatarsSection = document.querySelector('section.project-avatars[data-controller="desktop-modal"]');
-    
-    if (!projectAvatarsSection) {
+    const target = document.querySelector('.perma-toolbar__project-people');
+
+    if (!target) {
       setTimeout(() => this.addSeeEmailsButton(), 500);
       return;
     }
 
-    // Check if a "See Emails" button already exists on this page
     const existingButton = document.querySelector('.basecamp-email-search-button');
-    
     if (existingButton) {
-      // Button already exists, just update reference and return
       this.button = existingButton;
       return;
     }
-    
-    // Create the "See Emails" button
+
     this.button = document.createElement('a');
     this.button.href = '#';
-    this.button.className = 'btn btn--small basecamp-email-search-button';
-    this.button.textContent = 'See Emails';
-    this.button.style.cssText = 'margin-left: 20px;';
-    
-    
-    // Add button to the project-avatars section
-    projectAvatarsSection.appendChild(this.button);
-    
-    
-    // Add click event listener
+    this.button.className = 'contents basecamp-email-search-button';
+    this.button.title = 'Search team member emails';
+
+    const iconWrap = document.createElement('span');
+    iconWrap.className = 'btn btn--icon btn--round btn--sm';
+    iconWrap.style.marginLeft = '10px';
+
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(svgNS, 'svg');
+    svg.setAttribute('class', 'svg-icon');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('width', '16');
+    svg.setAttribute('height', '16');
+    svg.setAttribute('aria-hidden', 'true');
+    const path = document.createElementNS(svgNS, 'path');
+    path.setAttribute('fill', 'currentColor');
+    path.setAttribute('d', 'M4 6h16c1.1 0 2 .9 2 2v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V8c0-1.1.9-2 2-2zm0 2v.4l8 5 8-5V8H4zm0 2.75V16h16v-5.25l-8 5-8-5z');
+    svg.appendChild(path);
+    iconWrap.appendChild(svg);
+
+    const label = document.createElement('span');
+    label.className = 'margin-left-4';
+    label.textContent = 'See emails';
+
+    this.button.appendChild(iconWrap);
+    this.button.appendChild(label);
+    target.appendChild(this.button);
+
     this.button.addEventListener('click', (e) => {
       e.preventDefault();
       this.showEmailModal();
@@ -122,133 +134,83 @@ class BasecampEmailSearch {
 
   showEmailModal() {
     if (this.modal) {
-      // Modal already exists, just show it with proper centering
       this.modal.style.display = 'flex';
-      // Focus the search input when reopening modal
-      const input = this.modal.querySelector('.jump-menu__input-field');
+      const input = this.modal.querySelector('.nav-menu__input');
       if (input) {
         input.focus();
       }
       return;
     }
 
-    // Create modal overlay using safe DOM methods
     this.modal = document.createElement('div');
     this.modal.className = 'basecamp-email-modal-overlay';
-    
-    // Create modal content container
-    const modalContent = document.createElement('div');
-    modalContent.className = 'modal-sheet modal-sheet--themed modal-sheet--jump-menu jump-menu__content-filter';
-    modalContent.setAttribute('role', 'combobox');
-    modalContent.setAttribute('aria-haspopup', 'listbox');
-    modalContent.setAttribute('aria-owns', 'jump-menu__results');
-    modalContent.setAttribute('aria-expanded', 'true');
-    modalContent.setAttribute('selected-index', '0');
 
-    // Create search input
+    const sheet = document.createElement('div');
+    sheet.className = 'nav-menu__sheet nav-menu__sheet--jump';
+    sheet.setAttribute('role', 'dialog');
+    sheet.setAttribute('aria-modal', 'true');
+    sheet.setAttribute('aria-label', 'Search team member emails');
+
+    const scroller = document.createElement('div');
+    scroller.className = 'nav-menu__scroller';
+
+    const searchSection = document.createElement('section');
+    searchSection.className = 'nav-menu__section nav-menu__section--jump';
+
     const searchInput = document.createElement('input');
-    searchInput.type = 'text';
-    searchInput.className = 'jump-menu__input-field';
-    searchInput.setAttribute('data-behavior', 'content_filter_input');
-    searchInput.placeholder = 'Search for team member emails...';
-    searchInput.autofocus = true;
+    searchInput.type = 'search';
+    searchInput.className = 'input input--full-width nav-menu__input';
+    searchInput.placeholder = 'Search by name or email…';
     searchInput.spellcheck = false;
-    searchInput.autocorrect = 'off';
     searchInput.autocomplete = 'off';
-    searchInput.setAttribute('aria-owns', 'jump-menu__results');
-    searchInput.setAttribute('aria-controls', 'jump-menu__results');
-    searchInput.setAttribute('aria-labelledby', 'a-jump-menu__description');
-    searchInput.setAttribute('aria-autocomplete', 'list');
+    searchInput.setAttribute('aria-label', 'Search team member emails');
+    searchSection.appendChild(searchInput);
 
-    // Create screen reader elements
-    const screenReaderDiv = document.createElement('div');
-    screenReaderDiv.className = 'a-for-screen-reader';
-    
-    const statusSpan = document.createElement('span');
-    statusSpan.id = 'a-jump-menu__status';
-    statusSpan.setAttribute('data-role', 'content_filter_aria_status');
-    statusSpan.setAttribute('role', 'status');
-    statusSpan.setAttribute('aria-live', 'assertive');
-    statusSpan.textContent = 'Type to search for team member email addresses';
-    
-    const descSpan = document.createElement('span');
-    descSpan.id = 'a-jump-menu__description';
-    descSpan.setAttribute('data-role', 'content_filter_aria_description');
-    descSpan.textContent = 'Type to search for team member email addresses';
-    
-    screenReaderDiv.appendChild(statusSpan);
-    screenReaderDiv.appendChild(descSpan);
+    const peopleSection = document.createElement('section');
+    peopleSection.className = 'nav-menu__section nav-menu__section--people';
 
-    // Create results container
-    const resultsDiv = document.createElement('div');
-    resultsDiv.className = 'jump-menu__results';
-    resultsDiv.id = 'jump-menu__results';
-    resultsDiv.setAttribute('role', 'listbox');
-    
-    const section = document.createElement('section');
-    section.setAttribute('data-role', 'jump_menu_recent_history content_filter_group');
-    section.className = '';
-    
-    const groupTitle = document.createElement('div');
-    groupTitle.className = 'jump-menu__group-title';
-    groupTitle.textContent = 'Team Members';
-    
-    const searchResults = document.createElement('div');
-    searchResults.className = 'basecamp-email-search-results';
-    
-    section.appendChild(groupTitle);
-    section.appendChild(searchResults);
-    resultsDiv.appendChild(section);
+    const header = document.createElement('h3');
+    header.className = 'nav-menu__header';
+    header.textContent = 'Team Members';
+    peopleSection.appendChild(header);
 
-    // Create close button
-    const closeButton = document.createElement('button');
-    closeButton.className = 'basecamp-email-modal-close';
-    closeButton.style.cssText = 'position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 24px; cursor: pointer; color: #666;';
-    closeButton.textContent = '×';
+    const resultsList = document.createElement('ul');
+    resultsList.className = 'basecamp-email-search-results margin-top-4 list--unruled-actions list--unbulleted';
+    resultsList.setAttribute('role', 'group');
+    resultsList.setAttribute('aria-label', 'Team Members');
+    peopleSection.appendChild(resultsList);
 
-    // Create copied message
+    scroller.appendChild(searchSection);
+    scroller.appendChild(peopleSection);
+    sheet.appendChild(scroller);
+
     const copiedDiv = document.createElement('div');
     copiedDiv.className = 'basecamp-email-search-copied';
     copiedDiv.textContent = 'Copied to clipboard!';
+    sheet.appendChild(copiedDiv);
 
-    // Assemble modal
-    modalContent.appendChild(searchInput);
-    modalContent.appendChild(screenReaderDiv);
-    modalContent.appendChild(resultsDiv);
-    modalContent.appendChild(closeButton);
-    modalContent.appendChild(copiedDiv);
-    
-    this.modal.appendChild(modalContent);
-    
+    this.modal.appendChild(sheet);
     document.body.appendChild(this.modal);
+
     this.attachModalEventListeners();
-    
-    // Focus the search input
     searchInput.focus();
-    
-    // Auto-load all team members
     this.loadAllTeamMembers();
   }
 
   attachModalEventListeners() {
-    const closeBtn = this.modal.querySelector('.basecamp-email-modal-close');
-    const input = this.modal.querySelector('.jump-menu__input-field');
+    const input = this.modal.querySelector('.nav-menu__input');
     const results = this.modal.querySelector('.basecamp-email-search-results');
     const overlay = this.modal;
 
-    // Close modal events
-    closeBtn.addEventListener('click', () => this.hideModal());
     overlay.addEventListener('click', (e) => {
       if (e.target === overlay) this.hideModal();
     });
-    
-    // Search functionality
+
     input.addEventListener('input', (e) => this.handleSearch(e.target.value));
     results.addEventListener('click', (e) => this.handleResultClick(e));
-    
-    // ESC key to close
+
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && this.modal && this.modal.style.display === 'block') {
+      if (e.key === 'Escape' && this.modal && this.modal.style.display !== 'none') {
         this.hideModal();
       }
     });
@@ -374,59 +336,55 @@ class BasecampEmailSearch {
 
     this.clearElement(results);
     users.forEach(user => {
-      const article = document.createElement('article');
-      article.className = 'jump-menu__result';
-      article.setAttribute('data-role', 'content_filterable');
-      article.setAttribute('role', 'option');
-      article.setAttribute('data-email', user.email_address || '');
-      article.setAttribute('data-name', user.name || '');
+      const item = document.createElement('li');
+      item.className = 'nav-menu__result';
+      item.setAttribute('role', 'treeitem');
+      item.setAttribute('aria-selected', 'false');
+      item.setAttribute('data-email', user.email_address || '');
+      item.setAttribute('data-name', user.name || '');
 
-      const link = document.createElement('a');
-      link.className = 'jump-menu__link';
-      link.setAttribute('data-role', 'content_filter_text');
-      link.href = '#';
+      const link = document.createElement('button');
+      link.type = 'button';
+      link.className = 'nav-menu__link';
 
-      // Add avatar or icon
       if (user.avatar_url) {
         const avatar = document.createElement('img');
         avatar.className = 'basecamp-email-avatar';
         avatar.src = user.avatar_url;
-        avatar.alt = user.name || 'User';
+        avatar.alt = '';
         avatar.loading = 'lazy';
+        avatar.width = 24;
+        avatar.height = 24;
         link.appendChild(avatar);
       } else {
         const icon = document.createElement('span');
-        icon.className = 'jump-menu__icon jump-menu__icon--project';
+        icon.className = 'basecamp-email-avatar basecamp-email-avatar--placeholder';
         link.appendChild(icon);
       }
 
-      // Add name
       const nameSpan = document.createElement('span');
-      nameSpan.setAttribute('data-role', 'content_filter_aria_text');
       nameSpan.textContent = user.name || 'No name';
       link.appendChild(nameSpan);
 
-      // Add email
       const emailSpan = document.createElement('span');
-      emailSpan.className = 'jump-menu__subtitle';
+      emailSpan.className = 'nav-menu__subtitle';
       emailSpan.textContent = user.email_address || 'No email';
       link.appendChild(emailSpan);
 
-      article.appendChild(link);
-      results.appendChild(article);
+      item.appendChild(link);
+      results.appendChild(item);
     });
   }
 
   handleResultClick(event) {
     event.preventDefault();
     event.stopPropagation();
-    
-    const result = event.target.closest('.jump-menu__result');
+
+    const result = event.target.closest('.nav-menu__result');
     if (!result) return;
 
     const email = result.getAttribute('data-email');
-    
-    if (email && email !== 'No email') {
+    if (email) {
       this.copyToClipboard(email);
       this.showCopiedMessage();
     }

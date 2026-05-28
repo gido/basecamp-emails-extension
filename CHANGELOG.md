@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-05-28
+
+### Changed
+- Updated extension for Basecamp 5 redesign: button now injects into `.perma-toolbar__project-people` next to the project people link, and the modal is rebuilt on Basecamp 5's `.nav-menu__sheet--jump` classes (the v4 `.jump-menu__*` and `.modal-sheet--jump-menu` classes were removed in the redesign)
+- Replaced the "See Emails" text-only button with an envelope-icon button matching the visual language of Basecamp 5's perma-toolbar (`btn--icon btn--round btn--sm`)
+
+### Fixed
+- Fixed ESC key not closing the modal (was checking for `display: block` but modal uses `display: flex`)
+
+### Removed
+- Removed dependency on Basecamp's old `.jump-menu__*` and `.modal-sheet--*` classes (no longer styled in v5)
+- Removed unused close button from the modal (overlay click and Esc already close it)
+
+## [1.0.6] - 2025-08-11
+
 ### Removed
 - Removed unused popup.html file and popup directory
 - Removed popup action from manifest.json as extension only uses content scripts
