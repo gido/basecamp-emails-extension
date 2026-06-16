@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Added support for the new `app.basecamp.com` domain alongside the legacy `3.basecamp.com` domain, as Basecamp is migrating accounts to the new domain
+
+### Changed
+- The autocompletables API request now targets the current page's origin (`window.location.origin`) instead of a hardcoded `3.basecamp.com` host, so it works on whichever Basecamp domain the account is served from
+
 ## [2.0.0] - 2026-05-28
 
 ### Changed

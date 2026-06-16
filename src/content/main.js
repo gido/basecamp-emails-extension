@@ -291,7 +291,9 @@ class BasecampEmailSearch {
       throw new Error('Unable to extract CSRF token');
     }
 
-    const url = `https://3.basecamp.com/${accountId}/autocompletables/buckets/${bucketId}/people?mentionable=true`;
+    // Use the current origin so the extension works on both the legacy
+    // 3.basecamp.com domain and the new app.basecamp.com domain.
+    const url = `${window.location.origin}/${accountId}/autocompletables/buckets/${bucketId}/people?mentionable=true`;
     
     const response = await fetch(url, {
       method: 'GET',

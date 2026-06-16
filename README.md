@@ -178,6 +178,7 @@ The extension leverages Basecamp's internal API to provide email search function
 3. **URL Analysis**: Extracts account ID and project ID from current URL
    ```
    https://3.basecamp.com/[ACCOUNT_ID]/projects/[PROJECT_ID]/
+   https://app.basecamp.com/[ACCOUNT_ID]/projects/[PROJECT_ID]/
    ```
 4. **Authentication**: Retrieves CSRF token from page meta tags
 5. **API Integration**: Queries Basecamp's autocompletables endpoint
@@ -187,7 +188,9 @@ The extension leverages Basecamp's internal API to provide email search function
 
 ### API Details
 
-**Endpoint**: `https://3.basecamp.com/{account_id}/autocompletables/buckets/{project_id}/people`
+**Endpoint**: `https://{3|app}.basecamp.com/{account_id}/autocompletables/buckets/{project_id}/people`
+
+> The extension works on both the legacy `3.basecamp.com` domain and the new `app.basecamp.com` domain. The request is always sent to the current page's origin.
 
 **Parameters**:
 - `mentionable=true` - Include mentionable users (excludes groups automatically)
