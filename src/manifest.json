@@ -7,12 +7,14 @@
     "activeTab"
   ],
   "host_permissions": [
-    "https://3.basecamp.com/*"
+    "https://3.basecamp.com/*",
+    "https://app.basecamp.com/*"
   ],
   "content_scripts": [
     {
       "matches": [
-        "https://3.basecamp.com/*"
+        "https://3.basecamp.com/*",
+        "https://app.basecamp.com/*"
       ],
       "js": [
         "content/main.js"
@@ -34,7 +36,8 @@
         "assets/*"
       ],
       "matches": [
-        "https://3.basecamp.com/*"
+        "https://3.basecamp.com/*",
+        "https://app.basecamp.com/*"
       ]
     }
   ],
